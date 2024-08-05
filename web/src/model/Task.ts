@@ -7,14 +7,15 @@ export default class Task {
     persona: string;
     group: number;
     completed: boolean;
-  
-    constructor(id: number, title: string, description: string, persona: string, group: number, completed: boolean = false) {
+    isactive:boolean;
+    constructor(id: number, title: string, description: string, persona: string, group: number, completed: boolean = false,isactive :boolean =false) {
       this.id = id;
       this.title = title;
       this.description = description;
       this.persona = persona;
       this.group = group;
       this.completed = completed;
+      this.isactive=isactive;
     }
   }
   
