@@ -7,11 +7,14 @@ import { useFetchTasks } from '@/hooks/useFetchTasks';
 export default function Parent() {
   const [refreshKey, setRefreshKey] = useState(0);
 
-  const { activeTasks, completedTasks, allTasks } = useFetchTasks(refreshKey);
+  const { activeTasks, completedTasks, allTasks, loading, error } = useFetchTasks(refreshKey);
 
   const handleTaskUpdate = () => {
     setRefreshKey(prevKey => prevKey + 1);
   };
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>{error}</div>;
 
   return (
     <div>
@@ -23,7 +26,7 @@ export default function Parent() {
           <ActiveList tasks={activeTasks} onTaskUpdate={handleTaskUpdate} />
         </div>
         <div className="w-full md:w-1/3 px-5">
-          <CompletedList  onTaskUpdate={handleTaskUpdate} />
+          <CompletedList onTaskUpdate={handleTaskUpdate} />
         </div>
       </div>
     </div>

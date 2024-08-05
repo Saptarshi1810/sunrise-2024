@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import Task from '@/model/Task';
-import { getActiveTasks, getCompletedTasks, getAllTasks } from '@/modules/taskManager';
-
+import { getActiveTasks, getCompletedTasks, getAllTasks } from '@/modules/taskManager'
 export function useFetchTasks(refreshKey: number) {
   const [activeTasks, setActiveTasks] = useState<Task[]>([]);
   const [completedTasks, setCompletedTasks] = useState<Task[]>([]);
@@ -11,7 +10,7 @@ export function useFetchTasks(refreshKey: number) {
 
   useEffect(() => {
     async function fetchTasks() {
-      setLoading(true);
+      
       setError(null);
 
       try {

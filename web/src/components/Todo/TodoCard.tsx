@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, CardContent, Typography, Checkbox } from '@mui/material';
 import CardHeader from '@mui/material/CardHeader';
 import Task from '@/model/Task';
-import { updateTaskCompleted } from '@/modules/taskManager';
+import { updateTaskCompleted } from '@/modules/taskManager'; // Updated import path
 
 interface TaskCardProps {
   task: Task;
@@ -14,7 +14,6 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onTaskUpdate }) => {
     try {
       const completed = event.target.checked;
       await updateTaskCompleted(task.id, completed);
-      task.completed = completed; // Optimistically update the task status
       onTaskUpdate(); // Notify parent to refresh
     } catch (error) {
       console.error("Error updating task:", error);
@@ -29,7 +28,6 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onTaskUpdate }) => {
             checked={task.completed}
             onChange={handleCheckboxChange}
             disabled={!task.isactive}
-            aria-label={`Mark task ${task.id} as completed`}
           />
         }
         title={`${task.id}. ${task.title}`}

@@ -104,29 +104,8 @@ export async function createTask(title: string, description: string, persona: st
       throw error;
     }
   }
-// utils/taskUtils.ts
-export async function updateTaskCompleted(id: number, completed: boolean): Promise<Task> {
-    try {
-      const response = await fetch('/api/CompleteTask', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ id, completed }),
-      });
-  
-      if (!response.ok) {
-        throw new Error('Failed to update task');
-      }
-  
-      const updatedTask: Task = await response.json();
-      return updatedTask;
-    } catch (error) {
-      console.error("Error updating task:", error);
-      throw error;
-    }
-  }
-  
+
+
  // utils/taskUtils.ts
 export async function updateTask(updatedTask: Partial<Task> & { id: number }): Promise<Task> {
     try {
@@ -149,4 +128,51 @@ export async function updateTask(updatedTask: Partial<Task> & { id: number }): P
       throw error;
     }
   }
+  export async function updateTaskCompleted(id: number, completed: boolean): Promise<Task> {
+    try {
+      const response = await fetch('/api/CompleteTask', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id, completed }),
+      });
   
+      if (!response.ok) {
+        throw new Error('Failed to update task');
+      }
+  
+      const updatedTask: Task = await response.json();
+      
+      // Update the next task in sequence to become active if the current task is completed
+      if (completed) {
+        await activateNextTask(id);
+      }
+  
+      return updatedTask;
+    } catch (error) {
+      console.error("Error updating task:", error);
+      throw error;
+    }
+  }
+
+// Function to activate the next task in the sequence
+async function activateNextTask(taskId: number): Promise<void> {
+    try {
+        // Fetch all tasks to find the next one
+        const allTasks = await getAllTasks();
+        const task = allTasks.find(t => t.id === taskId);
+        
+        if (task) {
+            const nextTask = allTasks.find(t => t.id === taskId + 1);
+            if (nextTask) {
+                nextTask.isactive = true; // Set the next task to active
+                
+                // Update the next task in the backend
+                await updateTask({ id: nextTask.id, isactive: nextTask.isactive });
+            }
+        }
+    } catch (error) {
+        console.error("Error activating next task:", error);
+    }
+}
