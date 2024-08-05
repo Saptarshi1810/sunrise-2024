@@ -6,9 +6,10 @@ import { getCompletedTasks } from '@/modules/taskManager';
 
 interface TaskListProps {
   CompletedTasks?: Task[];
+  onTaskUpdate: () => void; // Callback function
 }
 
-const CompletedList: React.FC<TaskListProps> = ({ CompletedTasks = [] }) => {
+const CompletedList: React.FC<TaskListProps> = ({ CompletedTasks = [], onTaskUpdate }) => {
   const [tasks, setTasks] = useState<Task[]>(CompletedTasks);
 
   useEffect(() => {
@@ -22,21 +23,19 @@ const CompletedList: React.FC<TaskListProps> = ({ CompletedTasks = [] }) => {
     }
 
     fetchTasks();
-  }, []);
+  }, [onTaskUpdate]); // Add `onTaskUpdate` to dependency array
 
-  const incompleteTasks = tasks.filter(task => task.completed);
+  const completedTasks = tasks.filter(task => task.completed);
 
   return (
-    <>
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
-        <Heading>Completed</Heading>
-        {incompleteTasks.map((task, index) => (
-          <div key={index} style={{ flex: '1 1 33%', maxWidth: '50%' }}>
-            <TaskCard task={task} />
-          </div>
-        ))}
-      </div>
-    </>
+    <div className="flex flex-wrap gap-4">
+      <Heading>Completed</Heading>
+      {completedTasks.map(task => (
+        <div key={task.id} style={{ flex: '1 1 33%', maxWidth: '50%' }}>
+          <TaskCard task={task} onTaskUpdate={onTaskUpdate} />
+        </div>
+      ))}
+    </div>
   );
 };
 

@@ -6,9 +6,10 @@ import { getAllTasks } from '@/modules/taskManager';
 
 interface TaskListProps {
   initialTasks?: Task[];
+  onTaskUpdate: () => void; // Callback function
 }
 
-const TaskList: React.FC<TaskListProps> = ({ initialTasks = [] }) => {
+const TaskList: React.FC<TaskListProps> = ({ initialTasks = [], onTaskUpdate }) => {
   const [tasks, setTasks] = useState<Task[]>(initialTasks);
 
   useEffect(() => {
@@ -22,21 +23,19 @@ const TaskList: React.FC<TaskListProps> = ({ initialTasks = [] }) => {
     }
 
     fetchTasks();
-  }, []);
+  }, [onTaskUpdate]); // Add `onTaskUpdate` to dependency array
 
   const incompleteTasks = tasks.filter(task => !task.isactive);
 
   return (
-    <>
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
-        <Heading>TODO</Heading>
-        {incompleteTasks.map((task, index) => (
-          <div key={index} style={{ flex: '1 1 33%', maxWidth: '50%' }}>
-            <TaskCard task={task} />
-          </div>
-        ))}
-      </div>
-    </>
+    <div className="flex flex-wrap gap-4">
+      <Heading>TODO</Heading>
+      {incompleteTasks.map(task => (
+        <div key={task.id} style={{ flex: '1 1 33%', maxWidth: '50%' }}>
+          <TaskCard task={task} onTaskUpdate={onTaskUpdate} />
+        </div>
+      ))}
+    </div>
   );
 };
 

@@ -1,30 +1,44 @@
 import React from 'react';
-import { Card, CardContent, Typography } from '@mui/material';
+import { Card, CardContent, Typography, Checkbox } from '@mui/material';
 import CardHeader from '@mui/material/CardHeader';
 import Task from '@/model/Task';
-import Checkbox from '@mui/material/Checkbox';
-
-
+import { updateTaskCompleted } from '@/modules/taskManager';
 
 interface TaskCardProps {
   task: Task;
+  onTaskUpdate: () => void; // Callback function
 }
 
-const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
+const TaskCard: React.FC<TaskCardProps> = ({ task, onTaskUpdate }) => {
+  const handleCheckboxChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    try {
+      const completed = event.target.checked;
+      await updateTaskCompleted(task.id, completed);
+      task.completed = completed; // Optimistically update the task status
+      onTaskUpdate(); // Notify parent to refresh
+    } catch (error) {
+      console.error("Error updating task:", error);
+    }
+  };
+
   return (
-    <Card variant="outlined" sx={{ marginBottom: 2,height:"10.0rem",borderRadius: '8px' }}>
-      <CardHeader  avatar={
+    <Card variant="outlined" sx={{ marginBottom: 2, height: "10rem", borderRadius: 2 }}>
+      <CardHeader
+        avatar={
           <Checkbox
-          disabled={!task.isactive}/>
+            checked={task.completed}
+            onChange={handleCheckboxChange}
+            disabled={!task.isactive}
+            aria-label={`Mark task ${task.id} as completed`}
+          />
         }
-        title={task.id+". "+task.title}
+        title={`${task.id}. ${task.title}`}
         subheader={`Group ID: ${task.group}`}
         sx={{ paddingBottom: 0 }}
-        >
-      </CardHeader>
-      <CardContent> 
-      <Typography color="textSecondary" fontSize="1 rem">
-          {"Task assigned to "+task.persona}
+      />
+      <CardContent>
+        <Typography color="textSecondary" fontSize="1rem">
+          {`Task assigned to ${task.persona}`}
         </Typography>
         <Typography color="textSecondary" fontSize="0.8rem">
           {task.description}
