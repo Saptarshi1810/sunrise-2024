@@ -1,6 +1,3 @@
-
-
-import { tree } from 'next/dist/build/templates/app-page';
 import Task from '../model/Task';
 
 export const initialTasks: Task[] = [

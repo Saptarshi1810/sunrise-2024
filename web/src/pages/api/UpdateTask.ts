@@ -1,6 +1,6 @@
 // pages/api/updateTask.ts
 import { NextApiRequest, NextApiResponse } from 'next';
-import Task from '@/model/Task';
+
 import redis from '@/utils/redis';
 import deserializeTask from '@/utils/deserialize';
 

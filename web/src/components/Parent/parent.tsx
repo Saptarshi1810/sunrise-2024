@@ -7,7 +7,7 @@ import { useFetchTasks } from '@/hooks/useFetchTasks';
 export default function Parent() {
   const [refreshKey, setRefreshKey] = useState(0);
 
-  const { activeTasks, completedTasks, allTasks, loading, error } = useFetchTasks(refreshKey);
+  const { activeTasks,  allTasks, loading, error } = useFetchTasks(refreshKey);
 
   const handleTaskUpdate = () => {
     setRefreshKey(prevKey => prevKey + 1);

@@ -1,6 +1,6 @@
 // pages/api/initTasks.ts
 import { NextApiRequest, NextApiResponse } from 'next';
-import Task from '@/model/Task';
+
 import { initialTasks } from '@/utils/TaskList';
 import redis from '@/utils/redis';
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
